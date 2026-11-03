@@ -612,14 +612,9 @@ footer{background:var(--green-deep);color:rgba(243,238,228,.7);padding:clamp(60p
 @keyframes upIn{to{transform:none}}
 @keyframes dotDrop{to{transform:none}}
 @keyframes fadeIn{to{opacity:1}}
-/* Progress + cursor */
+/* Progress */
 .progress-top{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;pointer-events:none}
 .progress-top i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--mint));transform-origin:left;transform:scaleX(0)}
-.cursor,.cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:250;border-radius:50%;mix-blend-mode:difference;opacity:0;transition:opacity .3s,width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),background .3s}
-.cursor{width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff}
-.cursor-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid #fff}
-.cursor-on .cursor,.cursor-on .cursor-ring{opacity:1}
-.cursor-ring.big{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(255,255,255,.12)}
 /* Nav hide */
 .nav{transition:background .3s,box-shadow .3s,backdrop-filter .3s,transform .45s var(--ease)}
 .nav.hide{transform:translateY(-100%)}
@@ -727,7 +722,6 @@ footer{background:var(--green-deep);color:rgba(243,238,228,.7);padding:clamp(60p
   .chip.c2{left:8px}
   .steps{padding-left:22px}
 }
-@media (hover:none),(pointer:coarse){.cursor,.cursor-ring{display:none}}
 @media (prefers-reduced-motion:reduce){
   .intro{display:none}
   .wi,.foot-word .l{transform:none!important}
@@ -746,7 +740,6 @@ footer{background:var(--green-deep);color:rgba(243,238,228,.7);padding:clamp(60p
 try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('etik-intro')){ document.getElementById('intro').remove(); } else { document.documentElement.style.setProperty('--intro','1.15s'); sessionStorage.setItem('etik-intro','1'); } }catch(e){}
 </script>
 <div class="progress-top" aria-hidden="true"><i id="progTop"></i></div>
-<div class="cursor" aria-hidden="true"></div><div class="cursor-ring" aria-hidden="true"></div>
 
 <a class="sr-only" href="#main">Aller au contenu</a>
 
@@ -1705,26 +1698,6 @@ try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage
     });
     b.addEventListener('pointerleave', () => { b.style.transform = ''; });
   });
-
-  /* Custom cursor */
-  if (fine) {
-    const dot = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
-    let mx = -100, my = -100, rx = -100, ry = -100;
-    addEventListener('pointermove', e => {
-      mx = e.clientX; my = e.clientY;
-      document.body.classList.add('cursor-on');
-      const over = e.target.closest('a, button, summary, label, input, .tile, .choice');
-      ring.classList.toggle('big', !!over);
-    }, {passive:true});
-    document.addEventListener('pointerleave', () => document.body.classList.remove('cursor-on'));
-    const loopC = () => {
-      rx = lerp(rx, mx, .18); ry = lerp(ry, my, .18);
-      dot.style.transform = `translate(${mx}px,${my}px)`;
-      ring.style.transform = `translate(${rx}px,${ry}px)`;
-      requestAnimationFrame(loopC);
-    };
-    loopC();
-  }
 
   /* Scroll-driven loop */
   const nav = document.getElementById('nav');
